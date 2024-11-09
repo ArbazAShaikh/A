@@ -1,19 +1,33 @@
 def solve_knapsack():
-    val = [50, 100, 150, 200] 
-    wt = [8, 16, 32, 40]  
-    W = 64  
-    n = len(val) 
+    wt = [3, 4, 6, 5]
+    val = [2, 3, 1, 4]
+    W = 8
+    n = len(val)
+    
+    # Create a memoization table (2D list) to store results
+    memo = [[-1 for _ in range(W + 1)] for _ in range(n + 1)]
 
     def knapsack(W, n):
+        # Base case: if no items left or no capacity left
         if n == 0 or W == 0:
-            return 0 
+            return 0
+        # Check if the result is already computed
+        if memo[n][W] != -1:
+            return memo[n][W]
+        
+        # Recursive case: include or exclude the current item
         if wt[n-1] > W:
-            return knapsack(W, n-1)    
+            result = knapsack(W, n-1)
         else:
-            return max(
-                val[n-1] + knapsack(W - wt[n-1], n-1),knapsack(W, n-1)  
+            result = max(
+                val[n-1] + knapsack(W - wt[n-1], n-1), 
+                knapsack(W, n-1)
             )
         
+        # Store the result in the memoization table
+        memo[n][W] = result
+        return result
+
     print(knapsack(W, n))
 
 solve_knapsack()
