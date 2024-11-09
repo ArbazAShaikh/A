@@ -1,40 +1,33 @@
-def n_queens(n):
-    col = set()  
-    posDiag = set()  
-    negDiag = set()  
-    res = [] 
+def solve_knapsack():
+    wt = [3, 4, 6, 5]
+    val = [2, 3, 1, 4]
+    W = 8
+    n = len(val)
+    
+    # Create a memoization table (2D list) to store results
+    memo = [[-1 for _ in range(W + 1)] for _ in range(n + 1)]
 
-    board = [["0"] * n for _ in range(n)]
+    def knapsack(W, n):
+        # Base case: if no items left or no capacity left
+        if n == 0 or W == 0:
+            return 0
+        # Check if the result is already computed
+        if memo[n][W] != -1:
+            return memo[n][W]
+        
+        # Recursive case: include or exclude the current item
+        if wt[n-1] > W:
+            result = knapsack(W, n-1)
+        else:
+            result = max(
+                val[n-1] + knapsack(W - wt[n-1], n-1), 
+                knapsack(W, n-1)
+            )
+        
+        # Store the result in the memoization table
+        memo[n][W] = result
+        return result
 
-    def backtrack(r):
+    print(knapsack(W, n))
 
-        if r == n:
-            copy = [" ".join(row) for row in board]
-            res.append(copy)
-            return
-        for c in range(n):
-
-            if c in col or (r + c) in posDiag or (r - c) in negDiag:
-                continue
-
-            col.add(c)
-            posDiag.add(r + c)
-            negDiag.add(r - c)
-            board[r][c] = "1"
-
-            backtrack(r + 1)
-
-            col.remove(c)
-            posDiag.remove(r + c)
-            negDiag.remove(r - c)
-            board[r][c] = "0"
-
-    backtrack(0)
-
-    for sol in res:
-        for row in sol:
-            print(row)
-        print()
-
-
-n_queens(4)
+solve_knapsack()
