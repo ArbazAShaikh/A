@@ -1,33 +1,39 @@
-def solve_knapsack():
-    wt = [3, 4, 6, 5]
-    val = [2, 3, 1, 4]
-    W = 8
-    n = len(val)
-    
-    # Create a memoization table (2D list) to store results
-    memo = [[-1 for _ in range(W + 1)] for _ in range(n + 1)]
+def n_queens(n):
+    solutions = []  # To store all possible board configurations
+    board = [["0"] * n for _ in range(n)]  # Initialize an empty board with "0"s
 
-    def knapsack(W, n):
-        # Base case: if no items left or no capacity left
-        if n == 0 or W == 0:
-            return 0
-        # Check if the result is already computed
-        if memo[n][W] != -1:
-            return memo[n][W]
-        
-        # Recursive case: include or exclude the current item
-        if wt[n-1] > W:
-            result = knapsack(W, n-1)
-        else:
-            result = max(
-                val[n-1] + knapsack(W - wt[n-1], n-1), 
-                knapsack(W, n-1)
-            )
-        
-        # Store the result in the memoization table
-        memo[n][W] = result
-        return result
+    # Helper function to use backtracking
+    def backtrack(row, columns, posDiagonals, negDiagonals):
+        if row == n:  # All queens are placed successfully
+            solutions.append([" ".join(row) for row in board])  # Record the solution
+            return
 
-    print(knapsack(W, n))
+        for col in range(n):
+            if col in columns or (row + col) in posDiagonals or (row - col) in negDiagonals:
+                continue  # Skip if this column or diagonal is attacked by another queen
 
-solve_knapsack()
+            # Place queen at (row, col) and mark the column and diagonals as attacked
+            board[row][col] = "1"
+            columns.add(col)
+            posDiagonals.add(row + col)
+            negDiagonals.add(row - col)
+
+            # Move to the next row
+            backtrack(row + 1, columns, posDiagonals, negDiagonals)
+
+            # Remove the queen (backtrack) and unmark the column and diagonals
+            board[row][col] = "0"
+            columns.remove(col)
+            posDiagonals.remove(row + col)
+            negDiagonals.remove(row - col)
+
+    # Start backtracking from the first row
+    backtrack(0, set(), set(), set())
+
+    # Print all solutions
+    for solution in solutions:
+        for row in solution:
+            print(row)
+        print()  # Separate each solution with a blank line
+
+n_queens(4)
