@@ -1,28 +1,33 @@
-def fractional_knapsack():
-    # Initialize weights, values, and capacity
-    weights=[10,20,30,40]
-    values=[20,30,40,50]
-    capacity=70
-    result = 0  # To store the maximum value we can carry
+def solve_knapsack():
+    weights = [3, 4, 6, 5]
+    values = [2, 3, 1, 4]
+    W = 8
+    n = len(values)
+    
+    # Create a memoization table (2D list) to store results
+    memo = [[-1 for _ in range(W + 1)] for _ in range(n + 1)]
 
-    # Sort items by value-to-weight ratio in descending order
-    items = sorted(zip(weights, values), key=lambda x: x[1] / x[0], reverse=True)
-
-    # Iterate over each item in sorted order
-    for weight, value in items:
-        if capacity == 0:  # If the knapsack is full, stop
-            break
-
-        # If we can take the full weight of the item
-        if weight <= capacity:
-            result += value  # Add full value
-            capacity -= weight  # Reduce capacity by the weight taken
+    def knapsack(W, n):
+        # Base case: if no items left or no capacity left
+        if n == 0 or W == 0:
+            return 0
+        # Check if the result is already computed
+        if memo[n][W] != -1:
+            return memo[n][W]
+        
+        # Recursive case: include or exclude the current item
+        if weights[n-1] > W:
+            result = knapsack(W, n-1)
         else:
-            # If only part of the item's weight can be taken
-            result += (value / weight) * capacity  # Take fraction of the value
-            capacity = 0  # Knapsack is now full
+            result = max(
+                values[n-1] + knapsack(W - weights[n-1], n-1), 
+                knapsack(W, n-1)
+            )
+        
+        # Store the result in the memoization table
+        memo[n][W] = result
+        return result
 
-    print("Maximum value in knapsack:", result)
+    print(knapsack(W, n))
 
-if __name__ == "__main__":
-    fractional_knapsack()
+solve_knapsack()
