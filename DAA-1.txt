@@ -1,0 +1,20 @@
+def nonrecursive_fib(n):
+    a, b = 0, 1
+    for i in range(n):
+        print(a)
+        a, b = b, a + b
+
+# Example usage:
+fib(10)
+
+
+def recursive_fib(n):
+    if n <= 1:
+        return n
+    else:
+        return recursive_fib(n-1) + recursive_fib(n-2)
+
+# Print each Fibonacci number up to the nth number
+n = 10
+for i in range(n + 1):
+    print(recursive_fib(i))
