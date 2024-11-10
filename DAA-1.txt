@@ -5,7 +5,7 @@ def nonrecursive_fib(n):
         a, b = b, a + b
 
 # Example usage:
-fib(10)
+nonrecursive_fib(10)
 
 
 def recursive_fib(n):
